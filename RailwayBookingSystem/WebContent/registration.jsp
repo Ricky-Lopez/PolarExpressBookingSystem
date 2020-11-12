@@ -10,5 +10,19 @@
 		<title>Registration</title>
 	</head>
 	<body>
+		Create an account
+		<br>
+			<form method="post" action="login.jsp">
+			<table>
+			<tr>    
+			<td>Username</td><td><input type="text" name="username"></td>
+			</tr>
+			<tr>
+			<td>Password</td><td><input type="text" name="password"></td>
+			</tr>
+			</table>
+			<input type="submit" value="Create an account">
+			</form>
+		<br>
 	</body>
 </html>
