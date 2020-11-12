@@ -7,6 +7,22 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Helpme</title>
+		<title>Help me</title>
 	</head>
-<body>
+	<body>
+		<!--  <form method="get" action="sellsNewBeer.jsp">
+		<table>
+			<tr>    
+				<td>Bar</td><td><input type="text" name="barvalia"></td>
+			</tr>
+			<tr>
+				<td>Beer</td><td><input type="text" name="beer"></td>
+			</tr>
+			<tr>
+				<td>Price</td><td><input type="text" name="price"></td>
+			</tr>
+		</table>
+		<input type="submit" value="Add the selling beer!"> 
+	</form> -->
+	</body>
+</html>
