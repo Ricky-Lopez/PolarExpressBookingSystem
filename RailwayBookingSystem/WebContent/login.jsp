@@ -24,5 +24,9 @@
 			<input type="submit" value="Log-in">
 			</form>
 		<br>
+		
+		<form action="registration.jsp">
+			<input type="submit" value="Create an account">
+		</form>
 	</body>
 </html>
