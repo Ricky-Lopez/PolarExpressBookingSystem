@@ -10,19 +10,18 @@
 		<title>Help me</title>
 	</head>
 	<body>
-		<!--  <form method="get" action="sellsNewBeer.jsp">
-		<table>
-			<tr>    
-				<td>Bar</td><td><input type="text" name="barvalia"></td>
-			</tr>
-			<tr>
-				<td>Beer</td><td><input type="text" name="beer"></td>
-			</tr>
-			<tr>
-				<td>Price</td><td><input type="text" name="price"></td>
-			</tr>
-		</table>
-		<input type="submit" value="Add the selling beer!"> 
-	</form> -->
+		Log-in
+		<br>
+			<form method="get" action="login.jsp">
+			<table>
+				<tr>    
+					<td>Username</td><td><input type="text" name="username"></td>
+				</tr>
+				<tr>
+					<td>Password</td><td><input type="text" name="password"></td>
+				</tr>
+			</table>
+			<input type="submit" value="Log-in"> 
+			</form>
 	</body>
 </html>
