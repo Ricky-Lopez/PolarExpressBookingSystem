@@ -10,18 +10,27 @@
 		<title>Registration</title>
 	</head>
 	<body>
-		Create an account
+		<h1>Create an account</h1>
 		<br>
-			<form method="post" action="login.jsp">
+			<form method="post" action="registerUser.jsp">
 			<table>
 			<tr>    
-			<td>Username</td><td><input type="text" name="username"></td>
+			<td>Username</td><td><input type="text" name="username" maxlength="20" required></td>
 			</tr>
 			<tr>
-			<td>Password</td><td><input type="text" name="password"></td>
+			<td>Email Address</td><td><input type="email"  name="email" maxlength="40" required></td>
+			</tr>
+			<tr>
+			<td>First Name</td><td><input type="text" name="firstName" maxlength="20" required></td>
+			</tr>
+			<tr>
+			<td>Last Name</td><td><input type="text" name="lastName" maxlength="20" required></td>
+			</tr>
+			<tr>
+			<td>Password</td><td><input type="password" name="password" pattern=".{4,}" title="password must be at least 4 characters" maxlength="20" required></td>
 			</tr>
 			</table>
-			<input type="submit" value="Create an account">
+			<input type="submit" value="Create account">
 			</form>
 		<br>
 	</body>
