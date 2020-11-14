@@ -11,5 +11,13 @@
 	</head>
 	<body>
 	Success! :)
+	<br>
+	Username: 
+	<%=session.getAttribute("userID")%>
+	<br>
+	<br>
+	<form action="logout.jsp">
+		<input type="submit" value="Logout">
+	</form>
 	</body>
 </html>

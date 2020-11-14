@@ -17,6 +17,7 @@ String stmt = "SELECT username, password FROM passengers " +
 ResultSet rs = statement.executeQuery(stmt);
 System.out.println(rs.getMetaData().getColumnCount());
 if(rs.next()){
+	session.setAttribute("userID", username);
 	out.print("<meta http-equiv=\"Refresh\" content=\"0; url='success.jsp'\" />");
 }else{
 	out.print("Invalid username or password. Please try again.");
