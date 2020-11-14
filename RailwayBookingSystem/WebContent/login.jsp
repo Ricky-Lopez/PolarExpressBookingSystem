@@ -15,10 +15,10 @@
 			<form method="post" action="checkLoginDetails.jsp">
 			<table>
 			<tr>    
-			<td>Username</td><td><input type="text" name="username"></td>
+			<td>Username</td><td><input type="text" name="username" maxlength=20 required></td>
 			</tr>
 			<tr>
-			<td>Password</td><td><input type="text" name="password"></td>
+			<td>Password</td><td><input type="text" name="password" pattern=".{4,}" title="password must be at least 4 characters" maxlength=20 required></td>
 			</tr>
 			</table>
 			<input type="submit" value="Log-in">

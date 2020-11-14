@@ -3,12 +3,23 @@
 <!--Import some libraries that have classes that we need -->
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Check log-in details</title>
-	</head>
-	<body>
-	</body>
-</html>
+<%
+String username = request.getParameter("username");
+String password = request.getParameter("password");
+
+ApplicationDB db = new ApplicationDB();
+Connection connection = db.getConnection();
+
+Statement statement = connection.createStatement();
+String stmt = "SELECT username, password FROM passengers " +
+	"WHERE username LIKE '" + username + "' AND password LIKE '" + password + "'";
+
+ResultSet rs = statement.executeQuery(stmt);
+System.out.println(rs.getMetaData().getColumnCount());
+if(rs.next()){
+	out.print("<meta http-equiv=\"Refresh\" content=\"0; url='success.jsp'\" />");
+}else{
+	out.print("Invalid username or password. Please try again.");
+	out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
+}
+%>
