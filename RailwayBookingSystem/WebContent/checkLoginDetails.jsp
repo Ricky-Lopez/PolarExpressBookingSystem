@@ -23,4 +23,6 @@ if(rs.next()){
 	out.print("Invalid username or password. Please try again.");
 	out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
 }
+
+connection.close();
 %>
