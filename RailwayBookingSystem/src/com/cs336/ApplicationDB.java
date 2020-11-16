@@ -13,7 +13,7 @@ public class ApplicationDB {
 	public Connection getConnection(){
 		
 		//Create a connection string
-		String connectionUrl = "jdbc:mysql://cs336db.cmmkfv93npk0.us-east-1.rds.amazonaws.com:3306/railwayBookingSystem";
+		String connectionUrl = "jdbc:mysql://pebs-database.crhzwjvftuiz.us-east-2.rds.amazonaws.com:3306/railwayBookingSystem";
 		Connection connection = null;
 		
 		try {
@@ -25,7 +25,7 @@ public class ApplicationDB {
 		}
 		try {
 			//Create a connection to your DB
-			connection = DriverManager.getConnection(connectionUrl,"admin", "CS336Masterpass");
+			connection = DriverManager.getConnection(connectionUrl,"PolExpressAdm1n", "casqeZ-1bewwu-zumzar");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
