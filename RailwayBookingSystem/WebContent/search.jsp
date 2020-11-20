@@ -7,30 +7,32 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Home</title>
+		<title>Search</title>
 	</head>
+	
 	<body>
 	<jsp:include page="navBar.jsp"/>	
 	
-	Welcome, <%=session.getAttribute("userID")%>!
-	<br>
-	<br>
-	Search train schedules
-	<br>
-		<form method="post" action="checkSearch.jsp">
+	Sort
+	<form method="get" action="refinedSearch.jsp">
 		<table>
 		<tr>    
-		<td>Origin Station</td><td><input type="text" name="originStation" maxlength=10></td>
+		<td>Departure Time</td><td><input type="text" name="departureTime" maxlength=5></td>
 		</tr>
 		<tr>
-		<td>Destination Station</td><td><input type="text" name="destinationStation" maxlength=10></td>
+		<td>Arrival Time</td><td><input type="text" name="arrivalTime" maxlength=5></td>
 		</tr>
 		<tr>
-		<td>Date of travel</td><td><input type="text" name="dateOfTravel" maxlength=20 required></td>
+		<td>Fare</td><td><input type="text" name="fare" maxlength=20></td>
 		</tr>
 		</table>
 		<input type="submit" value="Search">
-		</form>
+	</form>
+	<br>
+	<br>
+	Train Schedules
+	<br>
+		Search results go here! :D
 	<br>
 	</body>
 </html>

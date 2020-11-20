@@ -11,7 +11,6 @@
 	</head>
 	<body>
 		<h1>Create an account</h1>
-		<br>
 			<form method="post" action="registerUser.jsp">
 			<table>
 			<tr>    
