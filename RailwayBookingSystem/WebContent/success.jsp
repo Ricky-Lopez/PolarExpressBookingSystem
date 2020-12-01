@@ -18,19 +18,38 @@
 	Search train schedules
 	<br>
 		<form method="post" action="checkSearch.jsp">
-		<table>
-		<tr>    
-		<td>Origin Station</td><td><input type="text" name="originStation" maxlength=10></td>
-		</tr>
-		<tr>
-		<td>Destination Station</td><td><input type="text" name="destinationStation" maxlength=10></td>
-		</tr>
-		<tr>
-		<td>Date of travel</td><td><input type="text" name="dateOfTravel" maxlength=20 required></td>
-		</tr>
-		</table>
-		<input type="submit" value="Search">
+			<table>
+			<tr>    
+				<td>Origin Station</td><td><input type="text" name="originStation" maxlength=10></td>
+			</tr>
+			<tr>
+				<td>Destination Station</td><td><input type="text" name="destinationStation" maxlength=10></td>
+			</tr>
+			<tr>
+				<td>Date of travel</td><td><input type="text" name="dateOfTravel" maxlength=20 required></td>
+			</tr>
+			</table>
+			<input type="submit" value="Search">
 		</form>
 	<br>
+	-----------------------------------------------------------------------
+	<form action="userReservationsList.jsp">
+		<input type="submit" value="View your Reservations">
+	</form>
+	<br>
+	
+	<form method="post" action="sendQuestion.jsp">
+		<table>
+		<tr>
+			<td>Have a question? Send it to our customer representatives! (max 100 characters)</td>
+		</tr>
+		<tr>
+			<td><input type="text" name="questionText" maxlength=100 required></td>
+		</tr>
+		<tr>
+			<td><input type="submit" value="Send"></td>
+		</tr>
+		</table>
+	</form>
 	</body>
 </html>

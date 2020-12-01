@@ -7,33 +7,17 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Search</title>
+		<title>Reservations</title>
 	</head>
-	
 	<body>
-	<jsp:include page="navBar.jsp"/>	
-	
-	Sort
-	<form method="get" action="refinedSearch.jsp">
-		<table>
-		<tr>    
-		<td>Departure Time</td><td><input type="text" name="departureTime" maxlength=5></td>
-		</tr>
-		<tr>
-		<td>Arrival Time</td><td><input type="text" name="arrivalTime" maxlength=5></td>
-		</tr>
-		<tr>
-		<td>Fare</td><td><input type="text" name="fare" maxlength=20></td>
-		</tr>
-		</table>
-		<input type="submit" value="Search">
-	</form>
-	<br>
-	===============================================================================================================
-	<br>
-	Train Schedules
-	<br>
-			<%
+		<jsp:include page="navBar.jsp"/>	
+		Reservations
+		
+		<%
+		String username = session.getAttribute("userID").toString();  //username of logged-in user
+		//figure out how to get the email
+		String email = "";
+		
 		List<String> list = new ArrayList<String>();
 
 		try {
@@ -43,12 +27,11 @@
 			
 			//Create a SQL statement
 			Statement stmt = con.createStatement();
-
-			//String entity = request.getParameter("price");
 			
-			//FIX THIS
-			String str = "SELECT * FROM stopsAt WHERE price <= " + "FIX THIS";
+			/*//Get the combobox from the index.jsp
+			String entity = request.getParameter("price");*/
 			
+			String str = "SELECT * FROM books WHERE email == " + email;  //change username to email
 			//Run the query against the database.
 			ResultSet result = stmt.executeQuery(str);
 
@@ -60,42 +43,29 @@
 			//make a column
 			out.print("<td>");
 			//print out column header
-			out.print("Train Number");
+			out.print("Reservation Number");
 			out.print("</td>");
 			//make a column
 			out.print("<td>");
-			out.print("Origin Station");
-			out.print("</td>");
-			//make a column
-			out.print("<td>");
-			out.print("Destination Station");
-			out.print("</td>");
-			//make a column
-			out.print("<td>");
-			out.print("Departure Time");
+			out.print("View Reservation");
 			out.print("</td>");
 			out.print("</tr>");
 
-			//parse out the results   FIX THIS
+			//parse out the results
 			while (result.next()) {
-				/*//make a row
+				//make a row
 				out.print("<tr>");
 				//make a column
 				out.print("<td>");
-				//Print out current bar name:
-				out.print(result.getString("bar"));
+				//Print out the reservation NO
+				out.print(result.getString("reservationNO"));
+				String reservationNO = result.getString("reservationNO");
 				out.print("</td>");
 				out.print("<td>");
-				//Print out current beer name:
-				out.print(result.getString("beer"));
+				//View reservation button
+				out.print("<form action=\"viewReservation.jsp?reservationNO=reservationNO\"><input type=\"submit\" value=\"View\"></form>");
 				out.print("</td>");
 				out.print("<td>");
-				//Print out current price
-				out.print(result.getString("price"));
-				out.print("</td>");
-				out.print("</tr>");
-				*/
-
 			}
 			out.print("</table>");
 
@@ -103,9 +73,8 @@
 			con.close();
 
 		} catch (Exception e) {
-			out.print("error");
+			out.print("out");
 		}
 	%>
-	<br>
 	</body>
 </html>
