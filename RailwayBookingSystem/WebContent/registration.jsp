@@ -10,6 +10,7 @@
 		<title>Registration</title>
 	</head>
 	<body>
+		<form action="login.jsp"><input type="submit" value="Back to login"></form>
 		<h1>Create an account</h1>
 			<form method="post" action="registerUser.jsp">
 			<table>
@@ -28,7 +29,20 @@
 			<tr>
 			<td>Password</td><td><input type="password" name="password" pattern=".{4,}" title="password must be at least 4 characters" maxlength="20" required></td>
 			</tr>
+			<tr>
+			<td>Age</td><td><input type="text" name="age" maxlength="3" required></td>
+			</tr>
+			<tr>
+			<td><input type="radio" name="command" value="passenger"/> I am a regular user</td>
+			</tr>
+			<tr>
+			<td><input type="radio" name="command" value="representative"/> I am a customer representative</td>
+			</tr>
+			<tr>
+			<td><input type="radio" name="command" value="admin"/> I am an admin</td>
+			</tr>
 			</table>
+			<br>
 			<input type="submit" value="Create account">
 			</form>
 		<br>
