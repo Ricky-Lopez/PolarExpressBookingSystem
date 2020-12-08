@@ -15,6 +15,7 @@ Statement statement = connection.createStatement();
 boolean isPassenger = false;
 boolean isRepresentatitve = false;
 boolean isAdmin = false;
+
 /*
   Check if username is a passenger, admin, or representative
   -> Go through passengers table and see if they are in there
@@ -23,57 +24,45 @@ boolean isAdmin = false;
   once you finish this, uncomment my comments below V V V 
 */
 
-//if (isPassenger == true){
-String stmt = "SELECT username, password FROM passengers " +
-	"WHERE username LIKE '" + username + "' AND password LIKE '" + password + "'";
+String query = "SELECT username, password FROM passengers WHERE username = " + "\"" + username + "\"";
+System.out.println(query);
+ResultSet rs = statement.executeQuery(query);
+if(rs.isBeforeFirst()){ //login is for passenger
+	System.out.println("user is passenger");
+	rs.next();
+	if(rs.getString(2).equals(password)){
+		session.setAttribute("userID", username);
+		session.setAttribute("userType", "passenger");
+		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='success.jsp'\" />");
+		return;
+	}
+	else{
+		out.print("Invalid username or password. Please try again.");
+		out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
+		return;
+	}
+}
 
-ResultSet rs = statement.executeQuery(stmt);
-System.out.println(rs.getMetaData().getColumnCount());
-if(rs.next()){
-	session.setAttribute("userID", username);
-	out.print("<meta http-equiv=\"Refresh\" content=\"0; url='success.jsp'\" />");
-}else{
+query = "SELECT username, password, isAdmin FROM employees WHERE username = "+ "\"" + username + "\"";
+System.out.println(query);
+rs = statement.executeQuery(query);
+if(rs.isBeforeFirst()){ //login is for rep or admin
+	rs.next();
+	if(rs.getString(2).equals(password)){
+		session.setAttribute("userID", username);
+		session.setAttribute("userType", rs.getBoolean(3) == true ? "admin" : "representative");
+		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='success.jsp'\" />");
+		return;
+	}
+	else{
+		out.print("Invalid username or password. Please try again.");
+		out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
+		return;
+	}
+}
+else{
 	out.print("Invalid username or password. Please try again.");
 	out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
 }
-//}
-
-/*
-else if (isRepresentative == true){
-	String stmt = "SELECT username, password FROM employees " +
-		"WHERE username LIKE '" + username + "' AND password LIKE '" + password + "'";
-	
-	ResultSet rs = statement.executeQuery(stmt);
-	System.out.println(rs.getMetaData().getColumnCount());
-	if(rs.next()){
-		session.setAttribute("userID", username);
-		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='representativeHome.jsp'\" />");
-	}else{
-		out.print("Invalid username or password. Please try again.");
-		out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
-	}
-}
-
-else if (isAdmin == true){
-	String stmt = "SELECT username, password FROM employees " +
-		"WHERE username LIKE '" + username + "' AND password LIKE '" + password + "'";
-
-	ResultSet rs = statement.executeQuery(stmt);
-	System.out.println(rs.getMetaData().getColumnCount());
-	if(rs.next()){
-		session.setAttribute("userID", username);
-		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='adminHome.jsp'\" />");
-	}else{
-		out.print("Invalid username or password. Please try again.");
-		out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
-	}
-}
-
-else {
-	out.print("Something went very wrong");
-	out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Back to login\"></form></br>");
-}
-*/
-
 connection.close();
 %>

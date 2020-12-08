@@ -14,6 +14,7 @@ public class ApplicationDB {
 		
 		//Create a connection string
 		String connectionUrl = "jdbc:mysql://pebs-database.crhzwjvftuiz.us-east-2.rds.amazonaws.com:3306/railwayBookingSystem";
+		
 		Connection connection = null;
 		
 		try {

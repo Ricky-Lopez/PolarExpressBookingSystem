@@ -12,21 +12,28 @@
 	<body>
 		<form action="login.jsp"><input type="submit" value="Back to login"></form>
 		<h1>Create an account</h1>
-			<form method="post" action="checkUserType.jsp">
+			<form method="post" action="registerUser.jsp">
 			<table>
+			<tr>    
+			<td>SSN</td><td><input type="text" name="SSN" pattern=".{11,}" placeholder="XXX-XX-XXXX" required></td>
+			</tr>
 			<tr>
-				<td>
-				<input type="radio" name="command" value="passenger"/> I am a regular user</td>
-				</tr>
-				<tr>
-				<td><input type="radio" name="command" value="representative"/> I am a customer representative</td>
-				</tr>
-				<tr>
-				<td><input type="radio" name="command" value="admin"/> I am an admin</td>
-				</tr>
+			<td>Username</td><td><input type="text" name="username" maxlength="20" required></td>
+			</tr>
+			<tr>
+			<td>First Name</td><td><input type="text" name="firstName" maxlength="20" required></td>
+			</tr>
+			<tr>
+			<td>Last Name</td><td><input type="text" name="lastName" maxlength="20" required></td>
+			</tr>
+			<tr>
+			<td>Password</td><td><input type="password" name="password" pattern=".{4,}" title="password must be at least 4 characters" maxlength="20" required></td>
+			</tr>
 			</table>
 			<br>
+			<input type="hidden" name="userType" value="admin">
 			<input type="submit" value="Create account">
 			</form>
+		<br>
 	</body>
 </html>

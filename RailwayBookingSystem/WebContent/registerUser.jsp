@@ -3,14 +3,8 @@
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 <%
-String username = request.getParameter("username");
-String email = request.getParameter("email");
-String firstName = request.getParameter("firstName");
-String lastName = request.getParameter("lastName");
-String password = request.getParameter("password");
-Integer age = Integer.parseInt(request.getParameter("age"));
-String userType = request.getParameter("command");
 
+String userType = request.getParameter("userType");
 try{
 	ApplicationDB db = new ApplicationDB();	
 	Connection connection = db.getConnection();
@@ -22,26 +16,26 @@ try{
 		String insert = "INSERT INTO passengers(email, username, password, " 
 				+ "first_name, last_name, age) VALUES (?, ?, ?, ?, ?, ?)";
 		PreparedStatement pStatement = connection.prepareStatement(insert);
-		pStatement.setString(1, email);
-		pStatement.setString(2, username);
-		pStatement.setString(3, password);
-		pStatement.setString(4, firstName);
-		pStatement.setString(5, lastName);
-		pStatement.setInt(6, age);
+		pStatement.setString(1, request.getParameter("email"));
+		pStatement.setString(2, request.getParameter("username"));
+		pStatement.setString(3, request.getParameter("password"));
+		pStatement.setString(4, request.getParameter("firstName"));
+		pStatement.setString(5, request.getParameter("lastName"));
+		pStatement.setInt(6, Integer.parseInt(request.getParameter("age")));
 		
 		pStatement.executeUpdate();
 	}
 	
 	//else if userType is representative
 	else if (userType.equals("representative")){
-		String insert = "INSERT INTO employees(email, username, password, " 
+		String insert = "INSERT INTO employees(SSN, username, password, " 
 				+ "first_name, last_name, isAdmin) VALUES (?, ?, ?, ?, ?, ?)";
 		PreparedStatement pStatement = connection.prepareStatement(insert);
-		pStatement.setString(1, email);
-		pStatement.setString(2, username);
-		pStatement.setString(3, password);
-		pStatement.setString(4, firstName);
-		pStatement.setString(5, lastName);
+		pStatement.setString(1, request.getParameter("SSN"));
+		pStatement.setString(2, request.getParameter("username"));
+		pStatement.setString(3, request.getParameter("password"));
+		pStatement.setString(4, request.getParameter("firstName"));
+		pStatement.setString(5, request.getParameter("lastName"));
 		pStatement.setBoolean(6, false);
 		
 		pStatement.executeUpdate();
@@ -49,14 +43,14 @@ try{
 	
 	//else userType is admin
 	else{
-		String insert = "INSERT INTO employees(email, username, password, " 
+		String insert = "INSERT INTO employees(SSN, username, password, " 
 				+ "first_name, last_name, isAdmin) VALUES (?, ?, ?, ?, ?, ?)";
 		PreparedStatement pStatement = connection.prepareStatement(insert);
-		pStatement.setString(1, email);
-		pStatement.setString(2, username);
-		pStatement.setString(3, password);
-		pStatement.setString(4, firstName);
-		pStatement.setString(5, lastName);
+		pStatement.setString(1, request.getParameter("SSN"));
+		pStatement.setString(2, request.getParameter("username"));
+		pStatement.setString(3, request.getParameter("password"));
+		pStatement.setString(4, request.getParameter("firstName"));
+		pStatement.setString(5, request.getParameter("lastName"));
 		pStatement.setBoolean(6, true);
 		
 		pStatement.executeUpdate();
@@ -67,8 +61,13 @@ try{
 	out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Continue to login\"></form></br>");
 	
 } catch(Exception ex){
-	if (ex.toString().contains("passengers.PRIMARY") || ex.toString().contains("employees.PRIMARY")){
+	System.out.println(ex.toString());
+	if (ex.toString().contains("passengers.PRIMARY")){
 		out.print("This email address is already associated with an account.");
+		out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Continue to login\"></form></br>");
+	}
+	else if(ex.toString().contains("employees.PRIMARY")){
+		out.print("These credentials are already associated with an account.");
 		out.print("<br><form action=\"login.jsp\"><input type=\"submit\" value=\"Continue to login\"></form></br>");
 	}
 	else{
