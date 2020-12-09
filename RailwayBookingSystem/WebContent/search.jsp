@@ -16,16 +16,68 @@
 	Sort
 	<form method="get" action="refinedSearch.jsp">
 		<table>
-		<tr>    
-		<td>Departure Time</td><td><input type="text" name="departureTime" maxlength=5></td>
-		</tr>
-		<tr>
-		<td>Arrival Time</td><td><input type="text" name="arrivalTime" maxlength=5></td>
-		</tr>
-		<tr>
-		<td>Fare</td><td><input type="text" name="fare" maxlength=20></td>
-		</tr>
-		</table>
+			<tr>
+				<td> Date of Travel </td>
+				<td> Origin Station </td>
+				<td> Destination Station </td>
+			</tr>
+			<tr>
+				<td><input type="text" name="date" placeholder="YYYY-MM-DD" maxlength=10></td>
+				<td>
+					<select name="originStation" id="originStation">
+					<%
+					try{
+						ApplicationDB db = new ApplicationDB();	
+						Connection connection = db.getConnection();
+						Statement statement = connection.createStatement();
+						String query = "SELECT name, state FROM trainStation";
+						ResultSet rs = statement.executeQuery(query);
+						while(rs.next()){
+							String val = rs.getString(1) + " (" + rs.getString(2) + ")";
+							out.write("<option value=\"" + val + "\">" + val + "</option>");
+						}
+					}catch(Exception ex){
+						
+					}
+					%>
+					</select>
+				</td>
+				<td>
+					<select name="destStation">
+					<%
+					try{
+						ApplicationDB db = new ApplicationDB();	
+						Connection connection = db.getConnection();
+						Statement statement = connection.createStatement();
+						String query = "SELECT name, state FROM trainStation";
+						ResultSet rs = statement.executeQuery(query);
+						while(rs.next()){
+							String val = rs.getString(1) + " (" + rs.getString(2) + ")";
+							out.write("<option value=\"" + val + "\">" + val + "</option>");
+						}
+					}catch(Exception ex){
+						
+					}
+					%>
+					</select>
+				</td>	
+			</tr>
+			</table>
+			
+			<table>
+			<tr><td><input type="radio" id="sortFare" name="sort" value="Fare">
+				<label for="sortFare">Sort By Fare (lowest-highest)</label><br></td>
+			</tr>
+			<tr>
+				<td><input type="radio" id="sortArrival" name="sort" value="Arrival">
+				<label for="sortArrival">Sort By Arrival Time (earliest-latest)</label><br></td>
+			</tr>
+			<tr>
+				<td><input type="radio" id="sortDeparture" name="sort" value="Departure">
+				<label for="sortDeparture">Sort By Departure Time (earliest-latest)</label><br></td>
+			</tr>
+			</table>
+
 		<input type="submit" value="Search">
 	</form>
 	<br>
