@@ -3,7 +3,8 @@
 <!--Import some libraries that have classes that we need -->
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
-
+<%@ page import="java.time.LocalTime"%>
+<%@ page import="java.text.DecimalFormat"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -19,12 +20,60 @@
 			  background-color: #f2f2f2;
 			}
 		</style>
+		<style>
+			input[type=submit] {
+			  background-color: #4CAF50;
+			  padding: 10px 20px;
+			  text-align: center;
+			  font-size: 16px;
+			}
+		</style>
 	</head>
 	
 <body>
 
+
+<%!
+	public float getFare(String transitLine, String origin, String oState, String destination, String dState, ApplicationDB db){
+		try{
+			Connection connection = db.getConnection();
+			Statement statement = connection.createStatement();
+			String query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + transitLine + "\" ORDER BY stops.arrivalTime";
+			ResultSet rs = statement.executeQuery(query);
+			int numStopsTraveled = 0;
+			int totalStops = 0;
+			float totalFare = 0f;
+			boolean originFound = false;
+			while(rs.next()){
+				if(originFound = true){
+					numStopsTraveled++;
+				}
+				if(rs.getString(2).equals(origin) && rs.getString(3).equals(oState)){
+					originFound = true;
+				}
+				if(rs.getString(2).equals(destination) && rs.getString(3).equals(dState) && originFound == true){
+					break;
+				}
+			}
+			
+			query = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = \"" + transitLine + "\"  AND L.lineName = \"" + transitLine + "\";";
+			rs = statement.executeQuery(query);
+			if(rs.next()){
+				totalStops = rs.getInt(1);
+				totalFare = rs.getFloat(2);
+			}
+			return (totalFare/totalStops)*numStopsTraveled;
+		}catch(Exception ex){
+			return 0f;
+		}
+	}
+
+%>
+
 <% 
 ArrayList<String> transitLines = new ArrayList<String>();
+HashMap <String, LocalTime> validLines = new HashMap<String, LocalTime>();
+HashMap <String, Float> validLinesFare = new HashMap<String, Float>();
 ArrayList<String> transitLineResults = new ArrayList<String>();
 
 String originSelection = request.getParameter("originStation");
@@ -35,61 +84,118 @@ String destSelection = request.getParameter("destStation");
 String destStationName = destSelection.substring(0, destSelection.indexOf("(")).trim();
 String destState = destSelection.substring(destSelection.indexOf("(")+1, destSelection.indexOf(")"));
 String travelDate = request.getParameter("date");
-
-String fareSort = "SELECT lineName FROM transitLine ORDER BY totalFare ASC;";
-String arrivalSort = "SELECT LineName FROM transitLine join (SELECT L.lineName, S.departureTime AS dept_date_and_time FROM transitLine L, stopsAt S "
-		+ "WHERE L.originStation = S.stationID AND S.lineName = L.lineName)z using (lineName) join (SELECT L.lineName, S.ArrivalTime AS "
-		+ "arrival_date_and_time FROM transitLine L, stopsAt S WHERE L.destinationStation = S.stationID AND S.lineName = L.lineName)w using (lineName) ORDER BY w.arrival_date_and_time ASC;";
-
-String departureSort = "SELECT LineName, z.dept_date_and_time, w.arrival_date_and_time FROM transitLine join "
-	+ "(SELECT L.lineName, S.departureTime AS dept_date_and_time FROM transitLine L, stopsAt S WHERE L.originStation = S.stationID AND S.lineName = L.lineName)z using (lineName) "
-	+ "join (SELECT L.lineName, S.ArrivalTime AS arrival_date_and_time FROM transitLine L, stopsAt S WHERE L.destinationStation = S.stationID AND S.lineName = L.lineName)w using (lineName) ORDER BY z.dept_date_and_time ASC;";
-
-
-
+String[] results;
+String departure;
 
 try{
 	ApplicationDB db = new ApplicationDB();	
 	Connection connection = db.getConnection();
 	Statement statement = connection.createStatement();
-	String query;
-	if(request.getParameter("sort").equals("Arrival")){
-		query = arrivalSort;
-	}
-	else if(request.getParameter("sort").equals("Departure")){
-		query = departureSort;
-	}
-	else{
-		query = fareSort;
-	}
+	String query = "SELECT lineName FROM transitLine";
 	ResultSet rs = statement.executeQuery(query);
 	
 	while(rs.next()){
 		transitLines.add(rs.getString(1));
 	}
 	
-	for(int i = 0; i < transitLines.size(); i++){
+	for(int i = 0; i < transitLines.size(); i++){ //for each transit line
 		boolean originFound = false;
 		boolean destFound = false;
 		String transitLine = transitLines.get(i);
-		query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + transitLine + "\"";
+		query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + transitLine + "\" ORDER BY stops.arrivalTime";
 		rs = statement.executeQuery(query);
+		int numStopsTraveled = 0;
+		
+		//get the stops for that transit line. Determine if there is a route on this transit line between origin and dest station.
 		while(rs.next()){
+			if(originFound = true){
+				numStopsTraveled++;
+			}
 			if(rs.getString(2).equals(originStationName) && rs.getString(3).equals(originState) && rs.getString(4).contains(travelDate)){
 				originFound = true;
+				
 			}
 			if(rs.getString(2).equals(destStationName) && rs.getString(3).equals(destState) && rs.getString(4).contains(travelDate) && originFound == true){
-				transitLineResults.add(rs.getString(1));
+				//depending on chosen sorting option, add lineName and value of sorting metric to appropriate hashmap
+				if(request.getParameter("sort").equals("Arrival")){
+					String arrivalDateTime = rs.getString(4);
+					String arrivalTime = arrivalDateTime.substring(arrivalDateTime.indexOf(" ")+1);
+					String[] timeSplit = arrivalTime.split(":");
+					validLines.put(rs.getString(1), LocalTime.of(Integer.parseInt(timeSplit[0]), Integer.parseInt(timeSplit[1]), Integer.parseInt(timeSplit[2])));
+					transitLineResults.add(rs.getString(1));
+				}
+				else if(request.getParameter("sort").equals("Departure")){
+					String departureDateTime = rs.getString(5);
+					String departureTime = departureDateTime.substring(departureDateTime.indexOf(" ")+1);
+					String[] timeSplit = departureTime.split(":");
+					validLines.put(rs.getString(1), LocalTime.of(Integer.parseInt(timeSplit[0]), Integer.parseInt(timeSplit[1]), Integer.parseInt(timeSplit[2])));
+					transitLineResults.add(rs.getString(1));
+				}
+				else{
+					Statement statement2 = connection.createStatement();
+					String nameAndTotalFareQuery = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = \"" + rs.getString(1) + "\"  AND L.lineName = \"" + rs.getString(1) + "\";";
+					System.out.println(nameAndTotalFareQuery);
+					ResultSet rsNameAndTotalFare = statement2.executeQuery(nameAndTotalFareQuery);
+					rsNameAndTotalFare.next();
+					int numStops = rsNameAndTotalFare.getInt(1);
+					Float totalFare = rsNameAndTotalFare.getFloat(2);
+
+					Float calculatedFare = (totalFare/numStops)*numStopsTraveled;
+					System.out.println("CALCULATED FARE: " + calculatedFare);
+					validLinesFare.put(rs.getString(1), calculatedFare);
+					transitLineResults.add(rs.getString(1));
+				}
 			}
 		}
-	}
-	if(transitLineResults.size() == 0){ %>
+	} //end for loop
+		if(request.getParameter("sort").equals("Fare")){
+			results = new String[transitLineResults.size()];
+			results = transitLineResults.toArray(results);
+			//Sort transit line names by chosen sorting metric -- an absolutely awful take on selection sort
+			for (int k = 0; k < results.length-1; k++) 
+	        { 
+	            // Find the minimum element in unsorted array 
+	            int minIndex = k; 
+	            for (int j =k+1; j < results.length; j++) {
+	                if (validLinesFare.get(results[j]).compareTo(validLinesFare.get(results[minIndex])) < 0) 
+	                    minIndex = j; 
+	            }
+	            // Swap the found minimum element with the first 
+	            // element 
+	            String temp = results[minIndex]; 
+	            results[minIndex] = results[k]; 
+	            results[k] = temp; 
+	        } 
+			
+		}
+		else {
+			results = new String[transitLineResults.size()];
+			results = transitLineResults.toArray(results);
+			//Sort transit line names by chosen sorting metric -- an absolutely awful take on selection sort
+			for (int k = 0; k < results.length-1; k++) 
+	        { 
+	            // Find the minimum element in unsorted array 
+	            int minIndex = k; 
+	            for (int j =k+1; j < results.length; j++) {
+	                if (validLines.get(results[j]).compareTo(validLines.get(results[minIndex])) < 0) 
+	                    minIndex = j; 
+	            }
+	            // Swap the found minimum element with the first 
+	            // element 
+	            String temp = results[minIndex]; 
+	            results[minIndex] = results[k]; 
+	            results[k] = temp; 
+	        } 
+		}
+	
+	System.out.println("IS SORTING WORKING? " + results.length);
+	if(results.length == 0){ %>
 	<h4> No results found for given information </h4>	
 	<%}
 	else{
 		System.out.println("in else");
-		for(int i = 0; i < transitLineResults.size(); i++){
-			String lineName = transitLineResults.get(i);
+		for(int i = 0; i < results.length; i++){
+			String lineName = results[i];
 			System.out.println("Gathering info for: " + lineName);
 			query = "SELECT LineName, t.trainID, x.origin_station, x.origin_state, y.destination_station, y.destination_state, z.dept_date_and_time, "
 					+ "w.arrival_date_and_time, totalTravelTime, totalFare FROM transitLine "
@@ -132,7 +238,7 @@ try{
 				<td> <%= "$" + rs.getInt(10)*2 %> </td>
 			</tr>
 			</table>
-			<%  query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + lineName + "\"";
+			<%  query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + lineName + "\" ORDER BY stops.arrivalTime";
 				System.out.println("down below");
 				rs = statement.executeQuery(query);
 				if (rs.isBeforeFirst()) { %>
@@ -153,8 +259,60 @@ try{
 						<td> <%= rs.getString(4) %> </td>
 						<td> <%= rs.getString(5) %> </td>
 					</tr>
-					<%}}%>
-					</table>
+					
+					<%}
+					
+					//put new stuff here	
+				
+				}%>
+				</table>
+				<h3>Trip Details:</h3>
+				<%
+					String arrival= "";
+					String depart = "";
+					query = "SELECT stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName "
+							+ "AND stops.stationID = T.stationID AND L.lineName = \"" + lineName + "\" AND T.name = \"" + originStationName + "\" AND T.state = \"" + originState + "\";";
+					rs = statement.executeQuery(query);
+					if(rs.next()){
+						depart = rs.getString(1);
+					}
+					
+					query = "SELECT stops.arrivalTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName "
+							+ "AND stops.stationID = T.stationID AND L.lineName = \"" + lineName + "\" AND T.name = \"" + destStationName + "\" AND T.state = \"" + destState + "\";";
+					
+					rs = statement.executeQuery(query);
+					if(rs.next()){
+						arrival = rs.getString(1);
+					}
+					
+					DecimalFormat df = new DecimalFormat();
+					df.setMaximumFractionDigits(2);
+							
+				%>
+				<table>
+					<tr>
+						<td> Date of Travel </td>
+						<td> Origin Station </td>
+						<td> Destination Station </td>
+						<td> Departure Time </td>
+						<td> Arrival Time </td>
+						<td> Fare </td>
+						<td rowspan="2"><form method="get" action="makeReservation.jsp">
+							<input type="submit" value="Reserve This Trip">
+							</form></td>
+					</tr>
+					<tr>
+						<td><%= travelDate %></td>
+						<td><%= request.getParameter("originStation") %></td>
+						<td><%= request.getParameter("destStation") %></td>
+						<td><%= depart %></td>
+						<td><%= arrival %></td>
+						<td><%= "$" + df.format(getFare(lineName, originStationName, originState, destStationName, destState, db)) %></td>
+					</tr>
+				</table>
+				
+				
+					
 			
 			
 <%
