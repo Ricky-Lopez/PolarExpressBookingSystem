@@ -13,8 +13,12 @@ try{
 	
 	//if userType is passenger
 	if (userType.equals("passenger")){
+		int disabled = 0;
+		if(request.getParameter("isDisabled") != null && request.getParameter("isDisabled").equals("true")){
+			disabled = 1;
+		}
 		String insert = "INSERT INTO passengers(email, username, password, " 
-				+ "first_name, last_name, age) VALUES (?, ?, ?, ?, ?, ?)";
+				+ "first_name, last_name, age, isDisabled) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement pStatement = connection.prepareStatement(insert);
 		pStatement.setString(1, request.getParameter("email"));
 		pStatement.setString(2, request.getParameter("username"));
@@ -22,6 +26,7 @@ try{
 		pStatement.setString(4, request.getParameter("firstName"));
 		pStatement.setString(5, request.getParameter("lastName"));
 		pStatement.setInt(6, Integer.parseInt(request.getParameter("age")));
+		pStatement.setInt(7, disabled);
 		
 		pStatement.executeUpdate();
 	}

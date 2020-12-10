@@ -32,6 +32,9 @@
 			<tr>
 			<td>Age</td><td><input type="text" name="age" maxlength="3" required></td>
 			</tr>
+			<tr>
+			<td>Passenger is Disabled</td><td><input type="checkbox" id="disabled" name="isDisabled" value="true"></td>
+			</tr>
 			</table>
 			<br>
 			<input type="hidden" name="userType" value="passenger">

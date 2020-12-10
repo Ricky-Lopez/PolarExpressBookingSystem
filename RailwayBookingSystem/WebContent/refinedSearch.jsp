@@ -98,6 +98,9 @@ try{
 		transitLines.add(rs.getString(1));
 	}
 	
+	System.out.println("origin station:" + originStationName);
+	System.out.println("dest station: " + destStationName);
+	
 	for(int i = 0; i < transitLines.size(); i++){ //for each transit line
 		boolean originFound = false;
 		boolean destFound = false;
@@ -108,14 +111,18 @@ try{
 		
 		//get the stops for that transit line. Determine if there is a route on this transit line between origin and dest station.
 		while(rs.next()){
-			if(originFound = true){
+			System.out.println(rs.getString(1) + rs.getString(2) + rs.getString(3));
+			System.out.println("originFound:" + originFound);
+			System.out.println(rs.getString(2).equals(originStationName));
+			if(originFound == true){
 				numStopsTraveled++;
 			}
 			if(rs.getString(2).equals(originStationName) && rs.getString(3).equals(originState) && rs.getString(4).contains(travelDate)){
-				originFound = true;
-				
+				System.out.println("IN ORIGIN FOUND IF STATEMENT FOR TRANSIT LINE " + transitLine);
+				originFound = true;	
 			}
 			if(rs.getString(2).equals(destStationName) && rs.getString(3).equals(destState) && rs.getString(4).contains(travelDate) && originFound == true){
+				System.out.println("IN DEST FOUND IF STATEMENT FOR TRANSIT LINE " + transitLine);
 				//depending on chosen sorting option, add lineName and value of sorting metric to appropriate hashmap
 				if(request.getParameter("sort").equals("Arrival")){
 					String arrivalDateTime = rs.getString(4);
@@ -297,7 +304,16 @@ try{
 						<td> Departure Time </td>
 						<td> Arrival Time </td>
 						<td> Fare </td>
-						<td rowspan="2"><form method="get" action="makeReservation.jsp">
+						<td rowspan="2">
+							<form method="get" action="makeReservation.jsp">
+							<input type="hidden" name =  "travelDate" value = "<%=travelDate%>">
+							<input type="hidden" name =  "originStation" value = "<%=originStationName%>">
+							<input type="hidden" name =  "originState" value = "<%=originState%>">
+							<input type="hidden" name =  "destStation" value = "<%=destStationName%>">
+							<input type="hidden" name =  "destState" value = "<%=destState%>">
+							<input type="hidden" name =  "departureTime" value = "<%=depart%>">
+							<input type="hidden" name =  "arrivalTime" value = "<%=arrival%>">
+							<input type="hidden" name =  "fare" value = "<%=df.format(getFare(lineName, originStationName, originState, destStationName, destState, db))%>">
 							<input type="submit" value="Reserve This Trip">
 							</form></td>
 					</tr>
