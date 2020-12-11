@@ -3,6 +3,7 @@
 <!--Import some libraries that have classes that we need -->
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -13,7 +14,16 @@
 	<body>
 	<jsp:include page="navBar.jsp"/>	
 	
-	Sort
+	<%
+		//get tomorrow's date so that user cannot select a date who's trains may have already left
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    Calendar c = Calendar.getInstance();
+	    c.add(Calendar.DATE, 1);
+	    String minDate = df.format(c.getTime());
+		
+	
+	
+	%>
 	<form method="get" action="refinedSearch.jsp">
 		<table>
 			<tr>
@@ -22,9 +32,9 @@
 				<td> Destination Station </td>
 			</tr>
 			<tr>
-				<td><input type="text" name="date" placeholder="YYYY-MM-DD" maxlength=10></td>
+				<td><input type="date" name="date" min="<%= minDate %>"required></td>
 				<td>
-					<select name="originStation" id="originStation">
+					<select name="originStation" id="originStation" required>
 					<%
 					try{
 						ApplicationDB db = new ApplicationDB();	
@@ -43,7 +53,7 @@
 					</select>
 				</td>
 				<td>
-					<select name="destStation">
+					<select name="destStation" required>
 					<%
 					try{
 						ApplicationDB db = new ApplicationDB();	

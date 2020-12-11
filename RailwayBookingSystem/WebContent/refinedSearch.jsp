@@ -118,11 +118,11 @@ try{
 			if(originFound == true){
 				numStopsTraveled++;
 			}
-			if(rs.getString(2).equals(originStationName) && rs.getString(3).equals(originState) && rs.getString(4).contains(travelDate)){
+			if(rs.getString(2).equals(originStationName) && rs.getString(3).equals(originState)){
 				System.out.println("IN ORIGIN FOUND IF STATEMENT FOR TRANSIT LINE " + transitLine);
 				originFound = true;	
 			}
-			if(rs.getString(2).equals(destStationName) && rs.getString(3).equals(destState) && rs.getString(4).contains(travelDate) && originFound == true){
+			if(rs.getString(2).equals(destStationName) && rs.getString(3).equals(destState) && originFound == true){
 				System.out.println("IN DEST FOUND IF STATEMENT FOR TRANSIT LINE " + transitLine);
 				//depending on chosen sorting option, add lineName and value of sorting metric to appropriate hashmap
 				if(request.getParameter("sort").equals("Arrival")){
@@ -219,7 +219,7 @@ try{
 			rs = statement.executeQuery(query); 
 			rs.next();%>
 			
-			<h2> <%= rs.getString(1) + " " + rs.getString(7) %> </h2>
+			<h2> <%= rs.getString(1) + " " + travelDate %> </h2>
 			<table> 
 			<tr>
 				<td> Line Name </td>
@@ -228,8 +228,8 @@ try{
 				<td> Origin Station State </td>
 				<td> Destination Station </td>
 				<td> Destination Station State </td>
-				<td> Departure Date and Time </td>
-				<td> Arrival Date and Time </td>
+				<td> Departure Time </td>
+				<td> Arrival Time </td>
 				<td> Total Travel Time </td>
 				<td> Fare </td>
 				<td> Round-Trip Fare </td>
@@ -241,8 +241,8 @@ try{
 				<td> <%= rs.getString(4) %> </td>
 				<td> <%= rs.getString(5) %> </td>
 				<td> <%= rs.getString(6) %> </td>
-				<td> <%= rs.getString(7) %> </td>
-				<td> <%= rs.getString(8) %> </td>
+				<td> <%= rs.getString(7).substring(rs.getString(7).indexOf(" ")+1) %> </td>
+				<td> <%= rs.getString(8).substring(rs.getString(8).indexOf(" ")+1) %> </td>
 				<td> <%= rs.getInt(9) + " minutes" %> </td>
 				<% if (request.getParameter("returnTrip") == null) { //don't display fares if is return trip since price is original fare * 2 instead%> 
 				<td> <%= "$" + rs.getInt(10) %> </td>
@@ -260,16 +260,16 @@ try{
 						<td> Line Name </td>
 						<td> Station Name </td>
 						<td> State </td>
-						<td> Arrival Date and Time </td>
-						<td> Departure Date and Time </td>
+						<td> Arrival Time </td>
+						<td> Departure Time </td>
 					</tr>
 					<% while (rs.next()){ %>
 					<tr>
 						<td> <%= rs.getString(1) %> </td>
 						<td> <%= rs.getString(2) %> </td>
 						<td> <%= rs.getString(3) %> </td>
-						<td> <%= rs.getString(4) %> </td>
-						<td> <%= rs.getString(5) %> </td>
+						<td> <%= rs.getString(4).substring(rs.getString(4).indexOf(" ")+1) %> </td>
+						<td> <%= rs.getString(5).substring(rs.getString(4).indexOf(" ")+1) %> </td>
 					</tr>
 					
 					<%}
@@ -319,6 +319,7 @@ try{
 							<input type="hidden" name =  "destState" value = "<%=destState%>">
 							<input type="hidden" name =  "departureTime" value = "<%=depart%>">
 							<input type="hidden" name =  "arrivalTime" value = "<%=arrival%>">
+							<input type="hidden" name =  "date" value = "<%=travelDate%>">
 							<input type="hidden" name =  "fare" value = "<%=df.format(getFare(lineName, originStationName, originState, destStationName, destState, db))%>">
 							<% if (request.getParameter("resId") != null){ //if we are booking a "return trip", then makeReservation sends this field. Otherwise, it is null
 								out.write("<input type = \"hidden\" name = \"resId\" value = \"" + resId + "\">"); //if we were sent this field, send it back so makeReservation knows this is return trip	
@@ -330,8 +331,8 @@ try{
 						<td><%= travelDate %></td>
 						<td><%= request.getParameter("originStation") %></td>
 						<td><%= request.getParameter("destStation") %></td>
-						<td><%= depart %></td>
-						<td><%= arrival %></td>
+						<td><%= depart.substring(depart.indexOf(" ")+1) %></td>
+						<td><%= arrival.substring(arrival.indexOf(" ")+1) %></td>
 						<td><%= "$" + df.format(getFare(lineName, originStationName, originState, destStationName, destState, db)) %></td>
 					</tr>
 				</table>

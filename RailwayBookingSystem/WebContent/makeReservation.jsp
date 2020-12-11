@@ -22,7 +22,14 @@
 		</style>
 		<style>
 			input[type=submit] {
-				  background-color: #4CAF50;
+				  text-align: center;
+				  font-size: 16px;
+				  display: block;
+   				  margin: 0 auto;
+			}
+		</style>
+		<style>
+			input[type=date] {
 				  text-align: center;
 				  font-size: 16px;
 				  display: block;
@@ -54,6 +61,7 @@
 	String origOriginStation = "";
 	String origDestStation = "";
 	String origArrival = "";
+	String origTravelDate = "";
 	Float origFare = 0f;
 	int origTrainNo = 0;
 	
@@ -122,8 +130,8 @@
 		//add reservation to DB
 			//non-return trip insertion]
 		if (resIdString == null){			
-			query = "INSERT INTO books(username, lineName, creationDate, departureDate, arrivalDate, totalFare, destination, origin) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			query = "INSERT INTO books(username, lineName, creationDate, departureDate, arrivalDate, totalFare, destination, origin, travel_date) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			pStatement.setString(1, passenger);
 			pStatement.setString(2, lineName);
@@ -133,6 +141,7 @@
 			pStatement.setFloat(6, fare);
 			pStatement.setInt(7, destId);
 			pStatement.setInt(8, originId);
+			pStatement.setString(9, travelDate);
 			
 			pStatement.executeUpdate();
 			
@@ -149,11 +158,11 @@
 			pStatement.setInt(1, Integer.parseInt(resIdString));
 			rs = pStatement.executeQuery();
 			rs.next();
-			fare = rs.getFloat(1)*2;
+			fare = rs.getFloat(1);
 			pStatement.close();
 			
-			query = "INSERT INTO books(username, lineName, creationDate, departureDate, arrivalDate, totalFare, destination, origin, round_trip) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			query = "INSERT INTO books(username, lineName, creationDate, departureDate, arrivalDate, totalFare, destination, origin, travel_date, round_trip) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			pStatement.setString(1, passenger);
 			pStatement.setString(2, lineName);
@@ -163,7 +172,8 @@
 			pStatement.setFloat(6, fare);
 			pStatement.setInt(7, destId);
 			pStatement.setInt(8, originId);
-			pStatement.setInt(9, Integer.parseInt(resIdString));
+			pStatement.setString(9, travelDate);
+			pStatement.setInt(10, Integer.parseInt(resIdString));
 			
 			pStatement.executeUpdate();
 			
@@ -188,28 +198,31 @@
 		<table>
 			<tr>
 				<td> Passenger Name </td>
-				<td>Reservation Creation Date </td>
-				<td>Transit Line Name </td>
+				<td> Reservation Creation Date </td>
+				<td> Travel Date </td>
+				<td> Transit Line Name </td>
 				<td> Train Number </td>
 				<td> Origin Station </td>
-				<td> Departure Date and Time </td>
+				<td> Departure Time </td>
 				<td> Destination Station </td>
-				<td> Arrival Date and Time </td>
+				<td> Arrival Time </td>
 				<td> Fare </td>	
 			</tr>
 			
 			<%
 				if(resIdString != null){ //if we just reserved a return trip, get corresponding reservation from database
-					query = "SELECT lineName, departureDate, arrivalDate, totalFare, destination, origin FROM books WHERE reservationNo = ?";
+					query = "SELECT lineName, departureDate, arrivalDate, totalFare, destination, origin, travel_date FROM books WHERE reservationNo = ?";
 					pStatement = connection.prepareStatement(query);
 					pStatement.setInt(1, Integer.parseInt(resIdString));
 					rs = pStatement.executeQuery();
+					rs.next();
 					origLineName = rs.getString(1);
 					origDeparture = rs.getString(2);
 					origArrival = rs.getString(3);
 					origFare = rs.getFloat(4);
 					int origDestId = rs.getInt(5);
 					int origOriginId = rs.getInt(6);
+					origTravelDate = rs.getString(7);
 					
 					//get names, states of origin & destination stations
 					query = "SELECT name, state FROM trainStation WHERE stationID = ?";
@@ -258,12 +271,13 @@
 					<tr>
 						<td> <%= name %> </td>
 						<td> <%= creationDate %> </td>
+						<td> <%= origTravelDate %> </td>
 						<td> <%= origLineName %> </td>
 						<td> <%= origTrainNo%> </td>
 						<td> <%= origOriginStation %> </td>
-						<td> <%= origDeparture%> </td>
+						<td> <%= origDeparture.substring(origDeparture.indexOf(" ")+1)%> </td>
 						<td> <%= origDestStation %> </td>
-						<td> <%= origArrival %> </td>
+						<td> <%= origArrival.substring(origArrival.indexOf(" ")+1) %> </td>
 						<td rowspan = 2> <%= origFare*2 %></td>
 					</tr>
 					
@@ -273,29 +287,43 @@
 			<tr>
 				<td> <%= name %> </td>
 				<td> <%= creationDate %> </td>
+				<td> <%= travelDate %> </td>
 				<td> <%= lineName %> </td>
 				<td> <%= trainNo %> </td>
 				<td> <%= origin + " (" + originState + ")" %> </td>
-				<td> <%= departure %> </td>
+				<td> <%= departure.substring(departure.indexOf(" ")) %> </td>
 				<td> <%= dest + " (" + destState + ")" %> </td>
-				<td> <%= arrival %> </td>
+				<td> <%= arrival.substring(arrival.indexOf(" ")+1) %> </td>
 				<% if (resIdString == null) { %>
 				<td> <%= "$" + fare %> </td>
 					<% } %>
 			</tr>
 		</table>
 		<br>
+		<%
+		//increment travel date by one day
+
+		System.out.println(travelDate);
+
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    Calendar c = Calendar.getInstance();
+	    c.setTime(df.parse(travelDate));
+	    c.add(Calendar.DATE, 1);
+	    travelDate = df.format(c.getTime());
+		
+	    if(resIdString == null){
+		%>
 		<form method="get" action="refinedSearch.jsp">
+			<input type="date" name="date" min="<%= travelDate%>" required>
 			<input type="hidden" name="originStation" value= "<%= dest + " (" + destState + ")"  %>">
 			<input type="hidden" name="destStation" value= "<%= origin + " (" + originState + ")"  %>">
-			<input type="hidden" name="date" value= "<%= travelDate %>">
 			<input type="hidden" name="sort" value= "Arrival">
 			<input type="hidden" name="resId" value= "<%= reservationId%>">
 			<input type="hidden" name="arrTime" value= "<%= arrival%>">
 			<input type="submit" value="Reserve A Return Trip">
 		</form>
 
-<%	connection.close();
+<%	}connection.close();
 	}catch(Exception ex){
 		System.out.println(ex.getMessage());
 		
