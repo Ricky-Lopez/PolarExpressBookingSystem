@@ -17,19 +17,8 @@
 	<br>
 	Search train schedules
 	<br>
-		<form method="post" action="checkSearch.jsp">
-			<table>
-			<tr>    
-				<td>Origin Station</td><td><input type="text" name="originStation" maxlength=30></td>
-			</tr>
-			<tr>
-				<td>Destination Station</td><td><input type="text" name="destinationStation" maxlength=30></td>
-			</tr>
-			<tr>
-				<td>Date of travel</td><td><input type="text" name="dateOfTravel" maxlength=20 required></td>
-			</tr>
-			</table>
-			<input type="submit" value="Search">
+		<form method="post" action="search.jsp">
+			<input type="submit" value="Search Train Schedules">
 		</form>
 	<br>
 	-----------------------------------------------------------------------

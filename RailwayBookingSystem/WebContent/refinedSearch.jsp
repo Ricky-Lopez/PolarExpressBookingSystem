@@ -84,6 +84,7 @@ String destSelection = request.getParameter("destStation");
 String destStationName = destSelection.substring(0, destSelection.indexOf("(")).trim();
 String destState = destSelection.substring(destSelection.indexOf("(")+1, destSelection.indexOf(")"));
 String travelDate = request.getParameter("date");
+String resId = request.getParameter("resId");
 String[] results;
 String departure;
 
@@ -98,7 +99,7 @@ try{
 		transitLines.add(rs.getString(1));
 	}
 	
-	System.out.println("origin station:" + originStationName);
+	System.out.println("origin station: " + originStationName);
 	System.out.println("dest station: " + destStationName);
 	
 	for(int i = 0; i < transitLines.size(); i++){ //for each transit line
@@ -125,6 +126,7 @@ try{
 				System.out.println("IN DEST FOUND IF STATEMENT FOR TRANSIT LINE " + transitLine);
 				//depending on chosen sorting option, add lineName and value of sorting metric to appropriate hashmap
 				if(request.getParameter("sort").equals("Arrival")){
+					System.out.println("Sorting by arrival");
 					String arrivalDateTime = rs.getString(4);
 					String arrivalTime = arrivalDateTime.substring(arrivalDateTime.indexOf(" ")+1);
 					String[] timeSplit = arrivalTime.split(":");
@@ -176,6 +178,7 @@ try{
 			
 		}
 		else {
+			System.out.println("IN ELSE FOR AWFUL SELECTION SORT");
 			results = new String[transitLineResults.size()];
 			results = transitLineResults.toArray(results);
 			//Sort transit line names by chosen sorting metric -- an absolutely awful take on selection sort
@@ -241,8 +244,10 @@ try{
 				<td> <%= rs.getString(7) %> </td>
 				<td> <%= rs.getString(8) %> </td>
 				<td> <%= rs.getInt(9) + " minutes" %> </td>
+				<% if (request.getParameter("returnTrip") == null) { //don't display fares if is return trip since price is original fare * 2 instead%> 
 				<td> <%= "$" + rs.getInt(10) %> </td>
 				<td> <%= "$" + rs.getInt(10)*2 %> </td>
+				<%} %>
 			</tr>
 			</table>
 			<%  query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + lineName + "\" ORDER BY stops.arrivalTime";
@@ -306,6 +311,7 @@ try{
 						<td> Fare </td>
 						<td rowspan="2">
 							<form method="get" action="makeReservation.jsp">
+							<input type="hidden" name =  "lineName" value = "<%=lineName%>">
 							<input type="hidden" name =  "travelDate" value = "<%=travelDate%>">
 							<input type="hidden" name =  "originStation" value = "<%=originStationName%>">
 							<input type="hidden" name =  "originState" value = "<%=originState%>">
@@ -314,6 +320,9 @@ try{
 							<input type="hidden" name =  "departureTime" value = "<%=depart%>">
 							<input type="hidden" name =  "arrivalTime" value = "<%=arrival%>">
 							<input type="hidden" name =  "fare" value = "<%=df.format(getFare(lineName, originStationName, originState, destStationName, destState, db))%>">
+							<% if (request.getParameter("resId") != null){ //if we are booking a "return trip", then makeReservation sends this field. Otherwise, it is null
+								out.write("<input type = \"hidden\" name = \"resId\" value = \"" + resId + "\">"); //if we were sent this field, send it back so makeReservation knows this is return trip	
+							}%>
 							<input type="submit" value="Reserve This Trip">
 							</form></td>
 					</tr>
