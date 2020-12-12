@@ -335,6 +335,9 @@ try{
 						<td><%= arrival.substring(arrival.indexOf(" ")+1) %></td>
 						<td><%= "$" + df.format(getFare(lineName, originStationName, originState, destStationName, destState, db)) %></td>
 					</tr>
+					<tr>
+						<td colspan = 7> **Applicable Discounts Applied At Registration** </td>
+					</tr>
 				</table>
 				
 				

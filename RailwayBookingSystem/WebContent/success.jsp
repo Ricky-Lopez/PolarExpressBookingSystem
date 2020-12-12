@@ -22,10 +22,13 @@
 		</form>
 	<br>
 	-----------------------------------------------------------------------
-	<form action="userReservationsList.jsp">
-		<input type="submit" value="View your Reservations">
+	<form method="post" action="viewCurrentReservations.jsp">
+		<input type="submit" value="View Current Reservations">
 	</form>
-	<br>
+	
+	<form method="post" action="viewPastReservations.jsp">
+		<input type="submit" value="View Past Reservations">
+	</form>
 	
 	<form method="post" action="sendQuestion.jsp">
 		<table>
