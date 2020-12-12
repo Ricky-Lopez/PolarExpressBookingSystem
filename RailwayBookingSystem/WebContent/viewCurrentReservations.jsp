@@ -27,6 +27,8 @@
 		<title>Past Reservations</title>
 	</head>
 	<body>
+		<jsp:include page="navBar.jsp"/>	
+		
 	<%
 	
 		ArrayList<Integer> pastReservationIds = new ArrayList<Integer>();
@@ -45,8 +47,8 @@
 			pStatement.setString(1, (String)session.getAttribute("userID"));
 			ResultSet rs = pStatement.executeQuery();
 			
-
-				%> <h1> Past Reservations </h1> <%
+			
+				%> <h1> Current Reservations </h1> <%
 				while(rs.next()){
 					Calendar reservationDate = Calendar.getInstance();
 					reservationDate.setTime(df.parse(rs.getString(10)));

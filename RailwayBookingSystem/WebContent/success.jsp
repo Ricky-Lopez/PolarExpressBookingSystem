@@ -21,7 +21,7 @@
 			<input type="submit" value="Search Train Schedules">
 		</form>
 	<br>
-	-----------------------------------------------------------------------
+	<hr>
 	<form method="post" action="viewCurrentReservations.jsp">
 		<input type="submit" value="View Current Reservations">
 	</form>

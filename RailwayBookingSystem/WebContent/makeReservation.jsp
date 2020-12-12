@@ -40,7 +40,8 @@
 			<title>Make Reservation</title>
 	</head>
 	<body>
-
+	<jsp:include page="navBar.jsp"/>	
+	
 <%
 	System.out.println("IN MAKE RESERVATION");
 	String lineName = request.getParameter("lineName");

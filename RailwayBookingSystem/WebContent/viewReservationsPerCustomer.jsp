@@ -17,15 +17,17 @@
 			  background-color: #f2f2f2;
 			}
 		</style>
-	
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Past Reservations</title>
+		<title>List of Reservations for Inputed Customer</title>
 	</head>
 	<body>
-		<jsp:include page="navBar.jsp"/>	
+		<jsp:include page="navBarAdmin.jsp"/>	
 		
-	<%
-	
+		<% String username = request.getParameter("customer").toString(); %>
+		<h1>List of Reservations for <%out.print(username);%></h1>
+		<hr>
+		<br>
+		<%	
 		ArrayList<Integer> pastReservationIds = new ArrayList<Integer>();
 	
 		//Get Today's Date As String
@@ -39,17 +41,14 @@
 			//get all of this user's reservations
 			String query = "SELECT * FROM books WHERE username = ?";
 			PreparedStatement pStatement = connection.prepareStatement(query);
-			pStatement.setString(1, (String)session.getAttribute("userID"));
+			pStatement.setString(1, (String)username);
 			ResultSet rs = pStatement.executeQuery();
 			
-
-				%> <h1> Past Reservations </h1> <%
 				while(rs.next()){
 					Calendar reservationDate = Calendar.getInstance();
 					reservationDate.setTime(df.parse(rs.getString(10)));
-					System.out.println("date of reservation: " + reservationDate);
-					if(reservationDate.compareTo(today) < 0){
-						System.out.println("reservation date is before today");
+
+					
 						//if reservation is part of round-trip, and we do not already have it's "linked" trip in the list -> add id
 						if(rs.getObject(11) != null && !pastReservationIds.contains(rs.getInt(11))) {
 							System.out.println("Adding an id of round trip");
@@ -58,11 +57,11 @@
 						else if(rs.getObject(11) == null){ //is not part of rount-trip -> add id
 							pastReservationIds.add(rs.getInt(1));
 						}
-					}
+					
 				}
 
 			if(pastReservationIds.size() == 0){
-				%> <h3> No Past Reservations Found </h3> <%
+				%> <h3> No Current Reservations Found </h3> <%
 				return;
 			}
 			
@@ -79,7 +78,7 @@
 			//get Passenger name
 			query = "SELECT first_name, last_name FROM passengers WHERE username = ?";
 			pStatement = connection.prepareStatement(query);
-			pStatement.setString(1, (String)session.getAttribute("userID"));
+			pStatement.setString(1, (String)username);
 			rs = pStatement.executeQuery();
 			rs.next();
 			String name = rs.getString(1) + " " + rs.getString(2);
@@ -214,7 +213,7 @@
 								<td> Departure Time </td>
 								<td> Destination Station </td>
 								<td> Arrival Time </td>
-								<td> Fare </td>	
+								<td> Fare </td>
 							</tr>
 							<tr>
 								<td> <%=name%> </td>
@@ -318,8 +317,5 @@
 	
 	
 	%>
-	
-	
-	
 	</body>
 </html>

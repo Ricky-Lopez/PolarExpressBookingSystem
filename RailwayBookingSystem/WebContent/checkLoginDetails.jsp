@@ -51,7 +51,7 @@ if(rs.isBeforeFirst()){ //login is for rep or admin
 	if(rs.getString(2).equals(password)){
 		session.setAttribute("userID", username);
 		session.setAttribute("userType", rs.getBoolean(3) == true ? "admin" : "representative");
-		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='success.jsp'\" />");
+		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='adminHome.jsp'\" />");
 		return;
 	}
 	else{

@@ -75,7 +75,7 @@
 			</table>
 			
 			<table>
-			<tr><td><input type="radio" id="sortFare" name="sort" value="Fare">
+			<tr><td><input type="radio" id="sortFare" name="sort" value="Fare" required>
 				<label for="sortFare">Sort By Fare (lowest-highest)</label><br></td>
 			</tr>
 			<tr>

@@ -31,7 +31,7 @@
 	</head>
 	
 <body>
-
+	<jsp:include page="navBar.jsp"/>	
 
 <%!
 	public float getFare(String transitLine, String origin, String oState, String destination, String dState, ApplicationDB db){
