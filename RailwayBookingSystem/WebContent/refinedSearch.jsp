@@ -336,7 +336,7 @@ try{
 						<td><%= "$" + df.format(getFare(lineName, originStationName, originState, destStationName, destState, db)) %></td>
 					</tr>
 					<tr>
-						<td colspan = 7> **Applicable Discounts Applied At Registration** </td>
+						<td colspan = 7> **Applicable Discounts Applied Upon Reservation** </td>
 					</tr>
 				</table>
 				
