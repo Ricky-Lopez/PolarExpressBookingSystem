@@ -82,45 +82,11 @@
 		
 		<hr>
 		<form method="post" action="totalRevenuePerLine.jsp">
-			<select name="transitLine" required>
-			<%
-			try{
-				ApplicationDB db = new ApplicationDB();	
-				Connection connection = db.getConnection();
-				Statement statement = connection.createStatement();
-				String query = "SELECT lineName FROM transitLine";
-				ResultSet rs = statement.executeQuery(query);
-				while(rs.next()){
-					String val = rs.getString(1);
-					out.write("<option value=\"" + val + "\">" + val + "</option>");
-				}
-			}catch(Exception ex){
-				
-			}
-			%>
-			</select>
 			<input type="submit" value="View Revenue (Per line)">
 		</form>
 		
 		<hr>
 		<form method="post" action="totalRevenuePerCustomer.jsp">
-			<select name="customer" required>
-			<%
-			try{
-				ApplicationDB db = new ApplicationDB();	
-				Connection connection = db.getConnection();
-				Statement statement = connection.createStatement();
-				String query = "SELECT username FROM passengers";
-				ResultSet rs = statement.executeQuery(query);
-				while(rs.next()){
-					String val = rs.getString(1);
-					out.write("<option value=\"" + val + "\">" + val + "</option>");
-				}
-			}catch(Exception ex){
-				
-			}
-			%>
-			</select>
 			<input type="submit" value="View Revenue (Per customer)">
 		</form>
 		
