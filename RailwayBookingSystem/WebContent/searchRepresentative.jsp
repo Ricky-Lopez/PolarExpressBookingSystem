@@ -12,7 +12,7 @@
 	</head>
 	
 	<body>
-	<jsp:include page="navBarAdmin.jsp"/>	
+	<jsp:include page="navBarRepresentative.jsp"/>	
 	
 	<%
 		//get tomorrow's date so that user cannot select a date who's trains may have already left
@@ -24,7 +24,7 @@
 	
 	
 	%>
-	<form method="get" action="refinedSearchAdmin.jsp">
+	<form method="get" action="refinedSearchRepresentative.jsp">
 		<table>
 			<tr>
 				<td> Date of Travel </td>

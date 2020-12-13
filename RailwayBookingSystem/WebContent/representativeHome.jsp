@@ -11,22 +11,26 @@
 	</head>
 	<body>
 		<jsp:include page="navBarRepresentative.jsp"/>	
-		Home page for representatives
+		<h1> Representative Home </h1>
+		<h2> Welcome, <%=session.getAttribute("userID")%>!</h2>
 		
-		Customer Representatives should be thought of as reservation agents and should be able to:
+		<%  /*Customer Representatives should be thought of as reservation agents and should be able to:
 			Edit and Delete information for train schedules
 			Reply to customer questions
 			Produce a list of all customers who have reservations on a given transit line and date
 			Produce a list of all schedules for a given station (both as origin and as destination)
 			(e.g. list of train schedules that have New Brunswick as origin, or list of train
-			schedules that have NB as destination)
+			schedules that have NB as destination) */%>
 			
+		<form method="post" action="searchRepresentative.jsp">
+			<input type="submit" value="Search Train Schedules">
+		</form>
+		<hr>	
+		
 		<form action="viewCustomerQuestions.jsp">
 			<input type="submit" value="View customer questions">
 		</form>
-		<br>
-		
-		
+		<hr>
 		
 		<form method="get" action="viewCustomersRepresentative.jsp">
 			<table>
@@ -39,9 +43,7 @@
 			</table>
 			<input type="submit" value="View customers with reservations for given transit line and date">
 		</form>
-		<br>
-		
-		
+		<hr>
 		
 		<form method="get" action="viewStationScheduleRepresentative.jsp">
 			<table>
@@ -51,6 +53,6 @@
 			</table>
 			<input type="submit" value="View schedules for a given station">
 		</form>
-		<br>
+		<hr>
 	</body>
 </html>
