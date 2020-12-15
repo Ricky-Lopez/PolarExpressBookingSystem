@@ -3,7 +3,18 @@
 <!--Import some libraries that have classes that we need -->
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%
+	//get tomorrow's date so that user cannot select a date who's trains may have already left
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    Calendar c = Calendar.getInstance();
+    c.add(Calendar.DATE, 1);
+    String minDate = df.format(c.getTime());
+	
+
+
+%>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -27,7 +38,7 @@
 		</form>
 		<hr>	
 		
-		<form action="viewCustomerQuestions.jsp">
+		<form action="viewCustomerQuestionsRep.jsp">
 			<input type="submit" value="View customer questions">
 		</form>
 		<hr>
@@ -38,7 +49,7 @@
 				<td>Transit Line</td><td><input type="text" name="transitLine" maxlength=30 required></td>
 			</tr>
 			<tr>
-				<td>Date of travel</td><td><input type="text" name="dateOfTravel" maxlength=20 required></td>
+				<td>Date of travel</td><td><input type="date" name="date" min="<%= minDate %>"required></td>
 			</tr>
 			</table>
 			<input type="submit" value="View customers with reservations for given transit line and date">

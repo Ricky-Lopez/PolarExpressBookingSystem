@@ -20,12 +20,7 @@
 		<title>Customer Questions</title>
 	</head>
 	<body>
-	<h1>Questions & Answers</h1>
-	<form method="post" action="viewCustomerQuestionsByKey.jsp">
-		<input type="submit" value="Sort by Keyword:"> <input type="text" name="keyword" maxlength=100 required>
-		
-	</form>
-	<br>
+	<h1>Questions</h1>
 	<form method="get" action="response.jsp">
 		<table>
 		<tr>
@@ -33,6 +28,7 @@
 		</tr>
 		<tr>
 			<td>
+				<select name="questionText" id="questionText" required>
 				<%
 				try{
 					ApplicationDB db = new ApplicationDB();	
@@ -41,25 +37,26 @@
 					String query = "SELECT * FROM questions";
 					ResultSet rs = statement.executeQuery(query);
 					while(rs.next()){
-						String val = "\"" + rs.getString(1) + "\" - " + rs.getString(3) + "&nbsp &nbsp";
-						out.write(val);
-						if(rs.getString(2) != null){
-							out.write("<br> <br>");
-							out.write("&nbsp &nbsp &nbsp &nbsp Representative Response: " + rs.getString(2));
-						}
-						out.write("<br> <br>");
+						String val = "\"" + rs.getString(1) + "\"";
+						out.write("<option value=" + val + ">" + rs.getString(1) + "</option>");
+						//TODO : FIGURE OUT WHY selection isn't being saved to questionText!
 					}
 				}catch(Exception ex){
 					
 				}
 				%>
+				</select>
 			</td>
 			</tr>
 		<tr>
+			<td><textarea id="responseText" name="responseText" rows="5" cols="50" required></textarea></td>
+		</tr>
+		<tr>
+			<td><input type="submit" value="Respond to Question"></td>
 		</tr>
 		</table>
 	</form>
 	<br>
-		<jsp:include page="navBar.jsp"/>	
+		<jsp:include page="navBarRepresentative.jsp"/>	
 	</body>
 </html>
