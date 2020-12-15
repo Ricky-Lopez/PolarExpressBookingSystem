@@ -308,7 +308,9 @@ try{
 						<td> Destination Station </td>
 						<td> Departure Time </td>
 						<td> Arrival Time </td>
+						<%if (resId == null) { %>
 						<td> Fare </td>
+						<%} %>
 						<td rowspan="2">
 							<form method="get" action="makeReservation.jsp">
 							<input type="hidden" name =  "lineName" value = "<%=lineName%>">
@@ -333,7 +335,9 @@ try{
 						<td><%= request.getParameter("destStation") %></td>
 						<td><%= depart.substring(depart.indexOf(" ")+1) %></td>
 						<td><%= arrival.substring(arrival.indexOf(" ")+1) %></td>
+						<%if (resId == null) { %>
 						<td><%= "$" + df.format(getFare(lineName, originStationName, originState, destStationName, destState, db)) %></td>
+						<%} %>
 					</tr>
 					<tr>
 						<td colspan = 7> **Applicable Discounts Applied Upon Reservation** </td>
@@ -350,7 +354,7 @@ try{
 	
 		
 	
-	
+	connection.close();
 	
 }catch (Exception ex){
 	
