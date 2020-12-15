@@ -11,7 +11,7 @@ try{
 	Connection connection = db.getConnection();
 	
 	Statement statement = connection.createStatement();
-	String insert = "INSERT INTO questions(questions, username) VALUES (?, ?)";
+	String insert = "INSERT INTO questions(question, username) VALUES (?, ?)";
 	PreparedStatement pStatement = connection.prepareStatement(insert);
 	pStatement.setString(1, question);
 	pStatement.setString(2, username);
@@ -27,7 +27,7 @@ try{
 	out.print("\n");
 	out.print("username: " + username);
 	out.print("\n");
-	out.print("why does this give an error when its a copy of registerUser");
+	out.print("why does this give an error when its a copy of registerUser"); //LMAO
 }
 
 /*

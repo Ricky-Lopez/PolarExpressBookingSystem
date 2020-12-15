@@ -4,6 +4,7 @@
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%String keyword = request.getParameter("keyword"); %>
 <html>
 	<head>
 		<style>
@@ -21,7 +22,10 @@
 	</head>
 	<body>
 	<h1>Questions & Answers</h1>
-	<form method="post" action="viewCustomerQuestionsByKey.jsp">
+	<form method="get" action="success.jsp">
+		<input type="submit" value="Back">
+	</form>
+	<form method="get" action="">
 		<input type="submit" value="Sort by Keyword:"> <input type="text" name="keyword" maxlength=100 required>
 		
 	</form>
@@ -29,7 +33,7 @@
 	<form method="get" action="response.jsp">
 		<table>
 		<tr>
-		<td> Questions List </td>
+		<td> Questions List (Sort: "<%out.print(keyword);%>") </td>
 		</tr>
 		<tr>
 			<td>
@@ -38,7 +42,7 @@
 					ApplicationDB db = new ApplicationDB();	
 					Connection connection = db.getConnection();
 					Statement statement = connection.createStatement();
-					String query = "SELECT * FROM questions";
+					String query = "SELECT * FROM questions WHERE question LIKE \"%" + keyword + "%\"";
 					ResultSet rs = statement.executeQuery(query);
 					while(rs.next()){
 						String val = "\"" + rs.getString(1) + "\" - " + rs.getString(3) + "&nbsp &nbsp";

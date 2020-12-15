@@ -31,6 +31,7 @@
 	</form>
 	
 	<form method="post" action="sendQuestion.jsp">
+	<hr>
 		<table>
 		<tr>
 			<td>Have a question? Send it to our customer representatives! (max 100 characters)</td>
@@ -42,6 +43,10 @@
 			<td><input type="submit" value="Send"></td>
 		</tr>
 		</table>
+	</form>
+	<br>
+	<form method="post" action="viewCustomerQuestions.jsp"> 
+		<input type="submit" value="View FAQ">
 	</form>
 	</body>
 </html>
