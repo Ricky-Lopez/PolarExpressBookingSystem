@@ -4,7 +4,7 @@
 * This project is an online railway booking system
 * Developers: Sara Crespo, Meghan VanNieuwland, Ricky Lopez
 * Written in JSP
-* November, 2020
+* November, 2020 - December, 2020
 
 ## Website URL
 * ec2-3-133-156-140.us-east-2.compute.amazonaws.com
