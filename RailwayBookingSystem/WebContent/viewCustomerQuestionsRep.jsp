@@ -39,7 +39,7 @@
 					while(rs.next()){
 						String val = "\"" + rs.getString(1) + "\"";
 						out.write("<option value=" + val + ">" + rs.getString(1) + "</option>");
-						//TODO : FIGURE OUT WHY selection isn't being saved to questionText!
+
 					}
 				}catch(Exception ex){
 					
