@@ -85,7 +85,8 @@
 					out.print("</td></tr>");
 					
 				}
-						
+			
+				connection.close();
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}

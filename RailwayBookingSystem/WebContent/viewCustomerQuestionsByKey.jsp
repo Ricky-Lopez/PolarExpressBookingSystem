@@ -53,6 +53,8 @@
 						}
 						out.write("<br> <br>");
 					}
+					
+					connection.close();
 				}catch(Exception ex){
 					
 				}

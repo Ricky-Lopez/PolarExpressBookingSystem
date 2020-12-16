@@ -119,6 +119,7 @@
 				%> <h3> No Current Reservations Found </h3> <%
 				return;
 			}
+		connection.close();
 	    }catch(Exception ex){
 	    	System.out.println(ex.getMessage());
 	    	ex.printStackTrace();

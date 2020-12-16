@@ -65,6 +65,8 @@
 		if(!notEmptySet){
 			out.print("<tr><td>Empty.</td></tr>");
 		}
+		
+		connection.close();
 	}catch(Exception ex){
 		
 	}

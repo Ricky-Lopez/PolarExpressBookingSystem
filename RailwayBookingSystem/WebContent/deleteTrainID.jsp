@@ -14,6 +14,8 @@
 		System.out.println(query);
 		int done = statement.executeUpdate(query);
 		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='editAndDeleteTrainSchedules.jsp'\" />");
+		
+		connection.close();
 	}catch(Exception ex){
 		ex.printStackTrace();
 	}

@@ -327,7 +327,7 @@ try{
 		
 	
 	
-	
+connection.close();
 }catch (Exception ex){
 	
 }

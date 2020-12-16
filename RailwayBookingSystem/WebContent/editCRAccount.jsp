@@ -38,6 +38,8 @@
 			String firstName = rs.getString(4);
 			String lastName = rs.getString(5);
 			String password = rs.getString(3);
+			
+			connection.close();
 		%>
 			 
 			<form method="post" action="updateRepresentativeAccount.jsp">

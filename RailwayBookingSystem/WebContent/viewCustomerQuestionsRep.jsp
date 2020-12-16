@@ -41,6 +41,8 @@
 						out.write("<option value=" + val + ">" + rs.getString(1) + "</option>");
 
 					}
+					
+					connection.close();
 				}catch(Exception ex){
 					
 				}

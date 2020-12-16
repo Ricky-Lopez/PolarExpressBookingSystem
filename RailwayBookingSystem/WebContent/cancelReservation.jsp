@@ -17,6 +17,8 @@
 			pStatement.setInt(1, resIdToCancel);
 			pStatement.executeUpdate();
 			
+			connection.close();
+			
 		}catch (Exception ex){
 			ex.printStackTrace();
 		}

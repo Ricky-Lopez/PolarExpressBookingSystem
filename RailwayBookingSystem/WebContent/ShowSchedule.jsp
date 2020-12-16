@@ -98,7 +98,7 @@ try{
 					</table>
 				<%}%> 
 
-	<%} %>
+	<%} connection.close(); %>
 	</body>
 
 <%

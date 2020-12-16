@@ -308,7 +308,7 @@
 			
 			
 			
-	    	
+	    connection.close();
 	    }catch(Exception ex){
 	    	System.out.println(ex.getMessage());
 	    	ex.printStackTrace();

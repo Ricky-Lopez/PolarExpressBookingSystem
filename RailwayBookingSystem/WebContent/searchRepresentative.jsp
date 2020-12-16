@@ -65,6 +65,8 @@
 							String val = rs.getString(1) + " (" + rs.getString(2) + ")";
 							out.write("<option value=\"" + val + "\">" + val + "</option>");
 						}
+						
+						connection.close();
 					}catch(Exception ex){
 						
 					}

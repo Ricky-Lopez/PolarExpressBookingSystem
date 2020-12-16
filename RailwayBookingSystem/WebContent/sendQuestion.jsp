@@ -22,6 +22,7 @@ try{
 	out.print("Question was sent to our customer representatives.");
 	out.print("<br><form action=\"success.jsp\"><input type=\"submit\" value=\"Back to home\"></form></br>");
 	
+	
 } catch(Exception ex){
 	out.print("Question text: " + question);
 	out.print("\n");

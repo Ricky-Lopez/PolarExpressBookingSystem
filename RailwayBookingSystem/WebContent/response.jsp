@@ -31,6 +31,8 @@
 			String query = "UPDATE questions SET answer = \"" + responseText + "\" WHERE question = \"" + question + "\"";
 			statement.executeUpdate(query);
 			System.out.println(query);
+			
+			connection.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -138,19 +138,20 @@
 	</tr>
 	<tr>
 	<td>
-		<select name="currTransitLine" id="currTransitLine" required>
+		<select name="currTransitLine" required>
 		<%
 		try{
 			ApplicationDB db = new ApplicationDB();	
 			Connection connection = db.getConnection();
 			Statement statement = connection.createStatement();
-			String query = "SELECT lineName, arrivalTime, departureTime from stopsAt";
+			String query = "SELECT lineName, arrivalTime, departureTime, stationID from stopsAt";
 			ResultSet rs = statement.executeQuery(query);
 			while(rs.next()){
-				String val = rs.getString(1) + ", Arrival Time: " + rs.getString(2) + ", Departure Time: " + rs.getString(3);
-				out.write("<option value=" + val + ">" + val + "</option>");
-
+				String val = rs.getString(1) + ", StationID " + rs.getInt(4) + ", Arrival Time: " + rs.getString(2).substring(rs.getString(2).indexOf(" ")) + ", Departure Time: " + rs.getString(3).substring(rs.getString(3).indexOf(" "));
+				out.write("<option value=\"" + val + "\">" + val + "</option>");
 			}
+			
+			connection.close();
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -161,10 +162,10 @@
 	</table>
 	<br>
 	<input type="submit" value="Edit Arrival Time To:">
-	<input type="datetime-local" name="arrivalDate" required >
+	<input type="time" name="arrivalDate" required >
 	<br>
 	<input type="submit" value="Edit Departure Time To:">
-	<input type="datetime-local" name="departureDate" required>
+	<input type="time" name="departureDate" required>
 	</form>
 	<br>
 	<br>

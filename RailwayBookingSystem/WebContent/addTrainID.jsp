@@ -16,6 +16,8 @@
 				+ "\", \"" + transitLine + "\")";
 		System.out.println(query);
 		int done = statement.executeUpdate(query);
+		
+		connection.close();
 	}catch(Exception ex){
 		ex.printStackTrace();
 	}
