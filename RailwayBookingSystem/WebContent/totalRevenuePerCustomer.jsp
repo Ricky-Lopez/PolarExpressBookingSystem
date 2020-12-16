@@ -76,7 +76,13 @@
 					
 					out.print("<td>");
 					String revenue = rs.getString("revenue");
-					//System.out.println(revenue);
+					//System.out.println("original revenue: " + revenue);
+					//System.out.println();
+					double rev = Double.parseDouble(revenue);
+					//System.out.println("double rev: " + rev);
+					rev = Math.round(rev * 100.0) / 100.0;
+					revenue = String.valueOf(rev);
+					//System.out.println("new string revenue: " + revenue);
 					//System.out.println();
 					out.print(revenue);
 					out.print("</td>");

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1" import="com.cs336.*"%>
 <!--Import some libraries that have classes that we need -->
-<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import="java.io.*,java.util.*,java.sql.*,java.lang.Math"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -76,7 +76,13 @@
 					
 					out.print("<td>");
 					String revenue = rs.getString("revenue");
-					//System.out.println(revenue);
+					//System.out.println("original revenue: " + revenue);
+					//System.out.println();
+					double rev = Double.parseDouble(revenue);
+					//System.out.println("double rev: " + rev);
+					rev = Math.round(rev * 100.0) / 100.0;
+					revenue = String.valueOf(rev);
+					//System.out.println("new string revenue: " + revenue);
 					//System.out.println();
 					out.print(revenue);
 					out.print("</td>");
