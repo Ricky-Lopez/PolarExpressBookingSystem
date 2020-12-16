@@ -65,5 +65,8 @@
 			<input type="submit" value="View schedules for a given station">
 		</form>
 		<hr>
+		<form method="get" action="editAndDeleteTrainSchedules.jsp">
+			<input type ="submit" value="Edit Train Schedule Data">
+		</form>
 	</body>
 </html>
