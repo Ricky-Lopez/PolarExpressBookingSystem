@@ -37,7 +37,7 @@
 			float totalFare = 0f;
 			boolean originFound = false;
 			while(rs.next()){
-				if(originFound = true){
+				if(originFound == true){
 					numStopsTraveled++;
 				}
 				if(rs.getString(2).equals(origin) && rs.getString(3).equals(oState)){
