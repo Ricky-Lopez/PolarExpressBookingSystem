@@ -26,43 +26,44 @@
 	<jsp:include page="navBarAdmin.jsp"/>	
 
 <%!
-	public float getFare(String transitLine, String origin, String oState, String destination, String dState, ApplicationDB db){
-		try{
-			Connection connection = db.getConnection();
-			String query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = ? ORDER BY stops.arrivalTime";
-			PreparedStatement statement = connection.prepareStatement(query);
-			statement.setString(1, transitLine);
-			ResultSet rs = statement.executeQuery();
-			int numStopsTraveled = 1;
-			int totalStops = 0;
-			float totalFare = 0f;
-			boolean originFound = false;
-			while(rs.next()){
-				if(originFound == true){
-					numStopsTraveled++;
-				}
-				if(rs.getString(2).equals(origin) && rs.getString(3).equals(oState)){
-					originFound = true;
-				}
-				if(rs.getString(2).equals(destination) && rs.getString(3).equals(dState) && originFound == true){
-					break;
-				}
+public float getFare(String transitLine, String origin, String oState, String destination, String dState, ApplicationDB db){
+	try{
+		Connection connection = db.getConnection();
+		String query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = ? ORDER BY stops.arrivalTime";
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, transitLine);
+		ResultSet rs = statement.executeQuery();
+		int numStopsTraveled = 1;
+		int totalStops = 0;
+		float totalFare = 0f;
+		boolean originFound = false;
+		while(rs.next()){
+			if(originFound == true){
+				numStopsTraveled++;
 			}
-			
-			query = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = ? AND L.lineName = ?;";
-			statement = connection.prepareStatement(query);
-			statement.setString(1, transitLine);
-			statement.setString(2, transitLine);
-			rs = statement.executeQuery(query);
-			if(rs.next()){
-				totalStops = rs.getInt(1);
-				totalFare = rs.getFloat(2);
+			if(rs.getString(2).equals(origin) && rs.getString(3).equals(oState)){
+				originFound = true;
 			}
-			return (totalFare/totalStops)*numStopsTraveled;
-		}catch(Exception ex){
-			return 0f;
+			if(rs.getString(2).equals(destination) && rs.getString(3).equals(dState) && originFound == true){
+				break;
+			}
 		}
+		
+		query = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = ? AND L.lineName = ?;";
+		statement = connection.prepareStatement(query);
+		statement.setString(1, transitLine);
+		statement.setString(2, transitLine);
+		rs = statement.executeQuery();
+		if(rs.next()){
+			totalStops = rs.getInt(1);
+			totalFare = rs.getFloat(2);
+		}
+		return (totalFare/totalStops)*numStopsTraveled;
+	}catch(Exception ex){
+		ex.printStackTrace();
+		return 0f;
 	}
+}
 
 %>
 
