@@ -56,12 +56,14 @@
 					<select name="destStation" required>
 					<%
 					try{
+						System.out.println("in second try");
 						ApplicationDB db = new ApplicationDB();	
 						Connection connection = db.getConnection();
 						Statement statement = connection.createStatement();
 						String query = "SELECT name, state FROM trainStation";
 						ResultSet rs = statement.executeQuery(query);
 						while(rs.next()){
+							System.out.println("in second while");
 							String val = rs.getString(1) + " (" + rs.getString(2) + ")";
 							out.write("<option value=\"" + val + "\">" + val + "</option>");
 						}

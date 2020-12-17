@@ -40,7 +40,7 @@
 			Statement statement = connection.createStatement();
 			String query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + transitLine + "\" ORDER BY stops.arrivalTime";
 			ResultSet rs = statement.executeQuery(query);
-			int numStopsTraveled = 0;
+			int numStopsTraveled = 1;
 			int totalStops = 0;
 			float totalFare = 0f;
 			boolean originFound = false;
@@ -357,7 +357,7 @@ try{
 	connection.close();
 	
 }catch (Exception ex){
-	
+	ex.printStackTrace();
 }
 %>
 </body>

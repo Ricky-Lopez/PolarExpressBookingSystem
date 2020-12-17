@@ -20,6 +20,7 @@
 <title>Train Schedule Maker</title>
 </head>
 <body>
+<jsp:include page="navBarRepresentative.jsp"/>	
 	<h1>Modify By Train</h1>
 	<hr>
 	<form method="get" action="editTrainID.jsp">

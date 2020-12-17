@@ -28,9 +28,27 @@
 		statement.setString(3, currTransitLine);
 		statement.setInt(4, stationID);
 		int done = statement.executeUpdate();
-		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='editAndDeleteTrainSchedules.jsp'\" />");
+		
+		//Update any reservations that use this stop as origin to use new time
+		query = "UPDATE books SET departureDate = ? WHERE lineName = ? AND origin = ?";
+		statement = connection.prepareStatement(query);
+		statement.setString(1, newDepart);
+		statement.setString(2, currTransitLine);
+		statement.setInt(3, stationID);
+		statement.executeUpdate();
+		
+		//Update any reservations that use this stop as destination to use new time
+		query = "UPDATE books SET arrivalDate = ? WHERE lineName = ? AND destination = ?";
+		statement = connection.prepareStatement(query);
+		statement.setString(1, newArrival);
+		statement.setString(2, currTransitLine);
+		statement.setInt(3, stationID);
+		statement.executeUpdate();		
 		
 		connection.close();
+		
+		out.print("<meta http-equiv=\"Refresh\" content=\"0; url='editAndDeleteTrainSchedules.jsp'\" />");
+		
 
 	}catch(Exception e){
 		e.printStackTrace();
@@ -39,9 +57,10 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Schedule Modification</title>
 </head>
 <body>
-
+<jsp:include page="navBarRepresentative.jsp"/>	
+	<h1> Schedule Edited!</h1>
 </body>
 </html>
