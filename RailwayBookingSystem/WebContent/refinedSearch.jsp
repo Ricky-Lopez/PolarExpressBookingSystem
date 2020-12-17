@@ -37,9 +37,10 @@
 	public float getFare(String transitLine, String origin, String oState, String destination, String dState, ApplicationDB db){
 		try{
 			Connection connection = db.getConnection();
-			Statement statement = connection.createStatement();
-			String query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + transitLine + "\" ORDER BY stops.arrivalTime";
-			ResultSet rs = statement.executeQuery(query);
+			String query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = ? ORDER BY stops.arrivalTime";
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setString(1, transitLine);
+			ResultSet rs = statement.executeQuery();
 			int numStopsTraveled = 1;
 			int totalStops = 0;
 			float totalFare = 0f;
@@ -56,14 +57,18 @@
 				}
 			}
 			
-			query = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = \"" + transitLine + "\"  AND L.lineName = \"" + transitLine + "\";";
-			rs = statement.executeQuery(query);
+			query = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = ? AND L.lineName = ?;";
+			statement = connection.prepareStatement(query);
+			statement.setString(1, transitLine);
+			statement.setString(2, transitLine);
+			rs = statement.executeQuery();
 			if(rs.next()){
 				totalStops = rs.getInt(1);
 				totalFare = rs.getFloat(2);
 			}
 			return (totalFare/totalStops)*numStopsTraveled;
 		}catch(Exception ex){
+			ex.printStackTrace();
 			return 0f;
 		}
 	}
@@ -91,9 +96,9 @@ String departure;
 try{
 	ApplicationDB db = new ApplicationDB();	
 	Connection connection = db.getConnection();
-	Statement statement = connection.createStatement();
 	String query = "SELECT lineName FROM transitLine";
-	ResultSet rs = statement.executeQuery(query);
+	PreparedStatement statement = connection.prepareStatement(query);
+	ResultSet rs = statement.executeQuery();
 	
 	while(rs.next()){
 		transitLines.add(rs.getString(1));
@@ -106,8 +111,10 @@ try{
 		boolean originFound = false;
 		boolean destFound = false;
 		String transitLine = transitLines.get(i);
-		query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + transitLine + "\" ORDER BY stops.arrivalTime";
-		rs = statement.executeQuery(query);
+		query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = ? ORDER BY stops.arrivalTime";
+		statement = connection.prepareStatement(query);
+		statement.setString(1, transitLine);
+		rs = statement.executeQuery();
 		int numStopsTraveled = 0;
 		
 		//get the stops for that transit line. Determine if there is a route on this transit line between origin and dest station.
@@ -141,10 +148,13 @@ try{
 					transitLineResults.add(rs.getString(1));
 				}
 				else{
-					Statement statement2 = connection.createStatement();
-					String nameAndTotalFareQuery = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = \"" + rs.getString(1) + "\"  AND L.lineName = \"" + rs.getString(1) + "\";";
+					String nameAndTotalFareQuery = "SELECT count(*), totalFare FROM stopsAt S, transitLine L WHERE S.lineName = ? AND L.lineName = ?;";
+					PreparedStatement statement2 = connection.prepareStatement(nameAndTotalFareQuery);
+					statement2.setString(1, transitLine);
+					statement2.setString(2, transitLine);
+					
 					System.out.println(nameAndTotalFareQuery);
-					ResultSet rsNameAndTotalFare = statement2.executeQuery(nameAndTotalFareQuery);
+					ResultSet rsNameAndTotalFare = statement2.executeQuery();
 					rsNameAndTotalFare.next();
 					int numStops = rsNameAndTotalFare.getInt(1);
 					Float totalFare = rsNameAndTotalFare.getFloat(2);
@@ -214,9 +224,10 @@ try{
 					+ "join (SELECT L.lineName, S.name AS destination_station, S.state AS destination_state FROM transitLine L, trainStation S WHERE L.destinationStation = S.stationID)y using (lineName) "
 					+ "join (SELECT L.lineName, S.departureTime AS dept_date_and_time FROM transitLine L, stopsAt S WHERE L.originStation = S.stationID AND S.lineName = L.lineName)z using (lineName) "
 					+ "join (SELECT L.lineName, S.ArrivalTime AS arrival_date_and_time FROM transitLine L, stopsAt S WHERE L.destinationStation = S.stationID AND S.lineName = L.lineName)w using (lineName) "
-					+ "WHERE LineName = \"" + lineName + "\"";
-			System.out.println(query);
-			rs = statement.executeQuery(query); 
+					+ "WHERE LineName = ?";
+			PreparedStatement pstatement = connection.prepareStatement(query);
+			pstatement.setString(1, lineName);
+			rs = pstatement.executeQuery(); 
 			rs.next();%>
 			
 			<h2> <%= rs.getString(1) + " " + travelDate %> </h2>
@@ -250,9 +261,10 @@ try{
 				<%} %>
 			</tr>
 			</table>
-			<%  query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = " + "\"" + lineName + "\" ORDER BY stops.arrivalTime";
-				System.out.println("down below");
-				rs = statement.executeQuery(query);
+			<%  query = "SELECT L.lineName, T.name, T.state, stops.arrivalTime, stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName AND stops.stationID = T.stationID AND L.lineName = ? ORDER BY stops.arrivalTime";
+				statement = connection.prepareStatement(query);
+				statement.setString(1, lineName);
+				rs = statement.executeQuery();
 				if (rs.isBeforeFirst()) { %>
 				<h4> Stops </h4>
 				<table>
@@ -283,16 +295,23 @@ try{
 					String arrival= "";
 					String depart = "";
 					query = "SELECT stops.departureTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName "
-							+ "AND stops.stationID = T.stationID AND L.lineName = \"" + lineName + "\" AND T.name = \"" + originStationName + "\" AND T.state = \"" + originState + "\";";
-					rs = statement.executeQuery(query);
+							+ "AND stops.stationID = T.stationID AND L.lineName = ? AND T.name = ? AND T.state = ?;";
+					statement = connection.prepareStatement(query);
+					statement.setString(1, lineName);
+					statement.setString(2, originStationName);
+					statement.setString(3, originState);
+					rs = statement.executeQuery();
 					if(rs.next()){
 						depart = rs.getString(1);
 					}
 					
 					query = "SELECT stops.arrivalTime FROM transitLine L, stopsAt stops, trainStation T WHERE stops.lineName = L.lineName "
-							+ "AND stops.stationID = T.stationID AND L.lineName = \"" + lineName + "\" AND T.name = \"" + destStationName + "\" AND T.state = \"" + destState + "\";";
-					
-					rs = statement.executeQuery(query);
+							+ "AND stops.stationID = T.stationID AND L.lineName = ? AND T.name = ? AND T.state = ?;";
+					statement = connection.prepareStatement(query);
+					statement.setString(1, lineName);
+					statement.setString(2, destStationName);
+					statement.setString(3, destState);		
+					rs = statement.executeQuery();
 					if(rs.next()){
 						arrival = rs.getString(1);
 					}
